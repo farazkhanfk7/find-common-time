@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from utils.utils import get_response_dict
 from users.services.users import sign_up_user, get_tokens_for_user
-from users.selectors import get_user_by_email, get_user_timing_preference
+from users.selectors import get_user_by_email
 from users.models import CustomUser
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated

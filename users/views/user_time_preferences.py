@@ -24,7 +24,7 @@ class UserTimePreferenceDetailView(APIView):
     def get(self, request):
         try:
             user = request.user
-            user_time_preference = get_user_timing_preference(user=user)
+            user_time_preference = get_user_timing_preference(user_pk=user.id)
             serializer = self.UserTimePreferenceSerializer(user_time_preference)
             return Response(
                 get_response_dict(
@@ -58,7 +58,7 @@ class UpdateUserTimePreferenceView(APIView):
     def patch(self, request):
         try:
             user = request.user
-            user_time_preference = get_user_timing_preference(user=user)
+            user_time_preference = get_user_timing_preference(user_pk=user.id)
             serializer = self.UserTimePreferenceSerializer(user_time_preference, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
