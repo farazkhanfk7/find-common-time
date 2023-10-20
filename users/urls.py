@@ -11,7 +11,7 @@ from .views import (
 
 user_time_preference_urls = [
     path("update/", UpdateUserTimePreferenceView.as_view()),
-    path("detail/", UserTimePreferenceDetailView.as_view()),
+    path("<int:pk>/detail/", UserTimePreferenceDetailView.as_view()),
 ]
 
 urlpatterns = [
@@ -19,6 +19,6 @@ urlpatterns = [
     path("signin/", SignInView.as_view()),
     path("update/", UpdateUserView.as_view()),
     path("delete/", DeleteUserView.as_view()),
-    path("detail/", UserDetailView.as_view()),
+    path("detail/<int:pk>/", UserDetailView.as_view()),
     path("time-preference/", include(user_time_preference_urls)),
 ]

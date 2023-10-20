@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import serializers
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from utils.utils import get_response_dict
 from users.models import UserTimingPreference
@@ -14,17 +14,16 @@ class UserTimePreferenceDetailView(APIView):
     """
 
     http_method_names = ["get"]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     class UserTimePreferenceSerializer(serializers.ModelSerializer):
         class Meta:
             model = UserTimingPreference
             fields = ["day_start_time", "day_end_time", "timezone"]
 
-    def get(self, request):
+    def get(self, request, pk=None):
         try:
-            user = request.user
-            user_time_preference = get_user_timing_preference(user_pk=user.id)
+            user_time_preference = get_user_timing_preference(user_pk=pk)
             serializer = self.UserTimePreferenceSerializer(user_time_preference)
             return Response(
                 get_response_dict(

@@ -7,7 +7,6 @@ base_endpoint = "/users/"
 
 class UserSignupTest(TestCase):
     def setUp(self):
-        # Create a test user for your setup
         self.user_data = {
             "email": "test@example.com",
             "password": "password123",
@@ -28,7 +27,6 @@ class UserSignupTest(TestCase):
 
 class UserSigninTest(TestCase):
     def setUp(self):
-        # Create a test user for your setup
         self.user_data = {
             "email": "random@gmail.com",
             "password": "password123",
@@ -42,9 +40,68 @@ class UserSigninTest(TestCase):
         self.assertEqual(response.data["detail"], "User logged in successfully")
 
     def test_signin_invalid_password(self):
-        # Ensure signin with invalid password fails
+        # signin with invalid password fails
         self.user_data["password"] = "random"
         response = self.client.post(base_endpoint + "signin/", data=self.user_data)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.data["detail"], "User login failed")
         self.assertEqual(response.data["error_details"], "Invalid credentials")
+
+
+class UpdateUserTest(TestCase):
+    def setUp(self):
+        self.user_data = {
+            "email": "random@gmail.com",
+            "password": "password123",
+        }
+        self.client = APIClient()
+
+        # create user
+        response = self.client.post(base_endpoint + "signup/", data=self.user_data)
+        self.access_token = response.data["data"]["access"]
+
+    def test_update_user(self):
+        # checking if updating a user is successful
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token)
+        response = self.client.patch(
+            base_endpoint + "update/",
+            data={"name": "Random", "password": "password1234"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["detail"], "User updated successfully")
+        self.assertEqual(response.data["data"]["name"], "Random")
+
+
+class UserDetailTest(TestCase):
+    def setUp(self):
+        self.user_data = {"email": "random@gmail.com", "password": "password123"}
+
+        self.client = APIClient()
+        # create user
+        response = self.client.post(base_endpoint + "signup/", data=self.user_data)
+
+    def test_get_user_detail(self):
+        # checking if getting user detail is successful
+        user = CustomUser.objects.get(email=self.user_data["email"])
+        response = self.client.get(base_endpoint + "detail/" + str(user.id) + "/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["detail"], "User details fetched successfully")
+        self.assertEqual(response.data["data"]["name"], user.name)
+        self.assertEqual(response.data["data"]["email"], user.email)
+        self.assertEqual(response.data["data"]["id"], user.id)
+
+
+class UserDeleteTest(TestCase):
+    def setUp(self):
+        self.user_data = {"email": "random@gmail.com", "password": "password123"}
+
+        self.client = APIClient()
+
+        response = self.client.post(base_endpoint + "signup/", data=self.user_data)
+        self.access_token = response.data["data"]["access"]
+
+    def test_delete_user(self):
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer " + self.access_token)
+        response = self.client.delete(base_endpoint + "delete/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["detail"], "User deleted successfully")

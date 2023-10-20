@@ -6,7 +6,7 @@ from users.services.users import sign_up_user, get_tokens_for_user
 from users.selectors import get_user_by_email
 from users.models import CustomUser
 from rest_framework import serializers
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db import IntegrityError
 
 
@@ -152,16 +152,16 @@ class UserDetailView(APIView):
     """
 
     http_method_names = ["get"]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     class UserDetailSerializer(serializers.ModelSerializer):
         class Meta:
             model = CustomUser
             fields = ["id", "name", "email"]
 
-    def get(self, request):
+    def get(self, request, pk):
         try:
-            user = request.user
+            user = CustomUser.objects.get(id=pk)
             serializer = self.UserDetailSerializer(user)
             return Response(
                 get_response_dict(
@@ -169,10 +169,11 @@ class UserDetailView(APIView):
                 ),
                 status=status.HTTP_200_OK,
             )
-        except Exception as e:
+        except CustomUser.DoesNotExist:
             return Response(
                 get_response_dict(
-                    message="User details fetch failed", error_details=str(e)
+                    message="User details fetch failed",
+                    error_details="User does not exist",
                 ),
                 status=status.HTTP_400_BAD_REQUEST,
             )
