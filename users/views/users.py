@@ -84,32 +84,39 @@ class UpdateUserView(APIView):
     class UserUpdateSerializer(serializers.ModelSerializer):
         class Meta:
             model = CustomUser
-            fields = ["email", "password"]
+            fields = ["name", "password"]
+
+    class UserUpdateOutputSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = CustomUser
+            fields = ["id", "name", "email"]
 
     def patch(self, request):
-        try:
+        user = request.user
+        serializer = self.UserUpdateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            # Get the current user
             user = request.user
-            serializer = self.UserUpdateSerializer(
-                user, data=request.data, partial=True
-            )
-            if serializer.is_valid():
-                serializer.save()
-                return Response(
-                    get_response_dict(
-                        message="User updated successfully", data=serializer.data
-                    ),
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                return Response(
-                    get_response_dict(
-                        message="User update failed", error_details=serializer.errors
-                    ),
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-        except IntegrityError as e:
+
+            # Set the new password and save the user
+            new_password = serializer.validated_data.pop("password")
+            user.set_password(new_password)
+            user.save()
+
+            serializer.save()
+
             return Response(
-                get_response_dict(message="User already exists", error_details=str(e)),
+                get_response_dict(
+                    message="User updated successfully",
+                    data=self.UserUpdateOutputSerializer(user).data,
+                ),
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                get_response_dict(
+                    message="User update failed", error_details=serializer.errors
+                ),
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -150,7 +157,7 @@ class UserDetailView(APIView):
     class UserDetailSerializer(serializers.ModelSerializer):
         class Meta:
             model = CustomUser
-            fields = ["email"]
+            fields = ["id", "name", "email"]
 
     def get(self, request):
         try:
