@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
-    
+
 class UserTimingPreference(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
 
@@ -26,7 +26,9 @@ class UserTimingPreference(models.Model):
     day_end_time = models.TimeField(null=True, blank=True)
 
     timezones = [(tz, tz) for tz in pytz.all_timezones]
-    timezone = models.CharField(max_length=100, choices=timezones, null=True, blank=True)
+    timezone = models.CharField(
+        max_length=100, choices=timezones, null=True, blank=True
+    )
 
     def __str__(self):
         return f"Timing Preferences for {self.user.email}"

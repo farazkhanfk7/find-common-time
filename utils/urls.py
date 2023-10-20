@@ -4,5 +4,5 @@ from .views import (
 )
 
 urlpatterns = [
-    path('suggested-times/', SuggestedTimeSlotsView.as_view()),
+    path("suggested-times/", SuggestedTimeSlotsView.as_view()),
 ]

@@ -1,4 +1,3 @@
-
 class ServerEnvironments:
-    DEVELOPMENT = 'develop'
-    PRODUCTION = 'production'
+    DEVELOPMENT = "develop"
+    PRODUCTION = "production"

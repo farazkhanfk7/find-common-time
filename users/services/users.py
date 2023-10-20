@@ -16,4 +16,3 @@ def sign_up_user(email, password) -> Tuple[CustomUser, dict]:
     user = create_user_profile(email, password)
     jwt_tokens = get_tokens_for_user(user)
     return user, jwt_tokens
-
