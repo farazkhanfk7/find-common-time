@@ -1,8 +1,8 @@
 from django.urls import path, include
 from .views import (
-    SuggestedTimeSlotsView,
+    SuggestedTimeSlotsAPIView,
 )
 
 urlpatterns = [
-    path("suggested-times/", SuggestedTimeSlotsView.as_view()),
+    path("suggested-times/", SuggestedTimeSlotsAPIView.as_view()),
 ]

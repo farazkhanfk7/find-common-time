@@ -104,6 +104,8 @@ def find_available_time_slots(user_time_preferences, busy_slots, duration, count
             current_time += timedelta(minutes=duration)
         else:
             current_time += timedelta(minutes=duration)
+    
+    condition_assert(len(suggested_slots) > 0, "No common slots found for meeting")
 
     return suggested_slots
 
