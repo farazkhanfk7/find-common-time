@@ -1,10 +1,12 @@
 # Common Time to Meet
 ## APIs built using Django
 
-This project was built on Python 3.11.4 and there are two branches in this project i.e : master and docker branch
+This project was built on Python 3.11.4
 
-- Master branch - It uses an sqlite db, which already has tables and data in it. It is easier to run if you want to run it locally.
-- Docker branch - It has `Dockerfile` and `docker-compose` file and uses postgres db as service
+#### There are two branches in this project i.e : master and docker branch
+
+- `master` branch - It uses an sqlite db, which already has tables and data in it. It is easier to run if you want to run it locally.
+- `docker` branch - It has `Dockerfile` and `docker-compose` file and uses postgres db as service
 
 ## Run Locally
 
@@ -44,6 +46,10 @@ This project was built on Python 3.11.4 and there are two branches in this proje
 
 ### APIs
 I was asked to make Create, Read, Update and Delete APIs for both User and UserTimingPreference.
+
+**For Authentication**
+- Get access token using SignUp or SignIn API
+- In header : Authorization : Bearer TOKEN
 
 #### User APIs
 1. `POST` SignUpAPI - It serves the purpose of Create API. It registers a user and returns JWT Tokens
