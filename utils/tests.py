@@ -49,9 +49,11 @@ class MeetingTimeSuggestionsTest(TestCase):
 
     def test_get_meeting_time_suggestions(self):
 
-        busy_slots = get_mock_data_for_busy_slots([1,2])
+        user1 = UserTimingPreference.objects.get(user__email=self.user_data1["email"])
+        user2 = UserTimingPreference.objects.get(user__email=self.user_data2["email"])
+        busy_slots = get_mock_data_for_busy_slots([user1.id, user2.id])
         response = self.client.post(
-            f"{base_endpoint}?users=1,2&duration_mins=60&count=3",
+            f"{base_endpoint}?users={user1.id},{user2.id}&duration_mins=60&count=3",
             data=busy_slots,
             format="json"
         )
